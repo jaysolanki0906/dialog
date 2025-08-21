@@ -1,0 +1,640 @@
+<div
+  class="fixed inset-0 bg-black bg-opacity-50 z-40"
+  (click)="onCancel()"
+></div>
+
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div
+    class="bg-[#F1EDFF] rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="flex items-center justify-between p-6 border-b border-gray-200">
+      <div>
+        <h2 class="text-xl font-semibold text-gray-900">
+          Edit Customer - {{ data.request.customerName }}
+        </h2>
+        <p class="text-sm text-gray-600 mt-1">
+          Update customer configuration and settings
+        </p>
+      </div>
+      <button
+        (click)="onCancel()"
+        class="text-gray-400 hover:text-gray-600 transition-colors"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          ></path>
+        </svg>
+      </button>
+    </div>
+
+    <form [formGroup]="customerForm" (ngSubmit)="onSubmit()" class="p-6">
+      <div class="mb-8">
+        <div class="flex items-center mb-4">
+          <svg
+            class="w-5 h-5 text-orange-500 mr-2"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+            />
+          </svg>
+          <h3 class="text-lg font-medium text-orange-600">
+            Basic Configuration
+          </h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Account Group <span class="text-red-500">*</span>
+            </label>
+            <ng-select
+              [items]="accountGroupOptions"
+              bindLabel="label"
+              bindValue="value"
+              formControlName="accountGroup"
+              placeholder="Select account group"
+              [clearable]="false"
+              [searchable]="true"
+              class="custom-select"
+            >
+            </ng-select>
+            <div
+              *ngIf="
+                customerForm.get('accountGroup')?.touched &&
+                customerForm.get('accountGroup')?.errors
+              "
+              class="text-red-500 text-xs mt-1"
+            >
+              <div
+                *ngIf="customerForm.get('accountGroup')?.errors?.['required']"
+              >
+                Account group is required
+              </div>
+
+              <div
+                *ngIf="customerForm.get('accountGroup')?.errors?.['pattern']"
+              >
+                Invalid account group format
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Company Code <span class="text-red-500">*</span>
+            </label>
+            <ng-select
+              [items]="companyCodeOptions"
+              bindLabel="label"
+              bindValue="value"
+              formControlName="companyCode"
+              placeholder="Select company code"
+              [clearable]="false"
+              class="custom-select"
+            >
+            </ng-select>
+            <div
+              *ngIf="
+                customerForm.get('companyCode')?.touched &&
+                customerForm.get('companyCode')?.errors
+              "
+              class="text-red-500 text-xs mt-1"
+            >
+              <div
+                *ngIf="customerForm.get('companyCode')?.errors?.['required']"
+              >
+                Company code is required
+              </div>
+
+              <div *ngIf="customerForm.get('companyCode')?.errors?.['pattern']">
+                Invalid company code format
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Sales Organization <span class="text-red-500">*</span>
+            </label>
+            <ng-select
+              [items]="salesOrganizationOptions"
+              bindLabel="label"
+              bindValue="value"
+              formControlName="salesOrganization"
+              placeholder="Select sales org"
+              [clearable]="false"
+              class="custom-select"
+            >
+            </ng-select>
+            <div
+              *ngIf="
+                customerForm.get('salesOrganization')?.touched &&
+                customerForm.get('salesOrganization')?.errors
+              "
+              class="text-red-500 text-xs mt-1"
+            >
+              <div
+                *ngIf="customerForm.get('salesOrganization')?.errors?.['required']"
+              >
+                Sales organization is required
+              </div>
+
+              <div
+                *ngIf="customerForm.get('salesOrganization')?.errors?.['pattern']"
+              >
+                Invalid sales organization format
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Distribution Channel <span class="text-red-500">*</span>
+            </label>
+            <ng-select
+              [items]="distributionChannelOptions"
+              bindLabel="label"
+              bindValue="value"
+              formControlName="distributionChannel"
+              placeholder="Select distribution channel"
+              [clearable]="false"
+              class="custom-select"
+            >
+            </ng-select>
+            <div
+              *ngIf="
+                customerForm.get('distributionChannel')?.touched &&
+                customerForm.get('distributionChannel')?.errors
+              "
+              class="text-red-500 text-xs mt-1"
+            >
+              <div
+                *ngIf="customerForm.get('distributionChannel')?.errors?.['required']"
+              >
+                Distribution Channel is required
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Division <span class="text-red-500">*</span>
+            </label>
+            <ng-select
+              [items]="divisionOptions"
+              bindLabel="label"
+              bindValue="value"
+              formControlName="division"
+              placeholder="Select division"
+              [clearable]="false"
+              class="custom-select"
+            >
+            </ng-select>
+            <div
+              *ngIf="
+                customerForm.get('division')?.touched &&
+                customerForm.get('division')?.errors
+              "
+              class="text-red-500 text-xs mt-1"
+            >
+              <div *ngIf="customerForm.get('division')?.errors?.['required']">
+                Division is required
+              </div>
+            </div>
+          </div>
+
+          <!-- Customer Group -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Customer Group <span class="text-red-500">*</span>
+            </label>
+            <ng-select
+              [items]="customerGroupOptions"
+              bindLabel="label"
+              bindValue="value"
+              formControlName="customerGroup"
+              placeholder="Select customer group"
+              [clearable]="false"
+              class="custom-select"
+            >
+            </ng-select>
+            <div
+              *ngIf="
+                customerForm.get('customerGroup')?.touched &&
+                customerForm.get('customerGroup')?.errors
+              "
+              class="text-red-500 text-xs mt-1"
+            >
+              <div
+                *ngIf="customerForm.get('customerGroup')?.errors?.['required']"
+              >
+                Customer Group is required
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sales Configuration Section -->
+      <div class="mb-8">
+        <div class="flex items-center mb-4">
+          <svg
+            class="w-5 h-5 text-orange-500 mr-2"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"
+            />
+          </svg>
+          <h3 class="text-lg font-medium text-orange-600">
+            Sales Configuration
+          </h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Sales Office -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Sales Office <span class="text-red-500">*</span>
+            </label>
+            <ng-select
+              [items]="salesOfficeOptions"
+              bindLabel="label"
+              bindValue="value"
+              formControlName="salesOffice"
+              placeholder="Select sales office"
+              [clearable]="false"
+              class="custom-select"
+            >
+            </ng-select>
+            <div
+              *ngIf="
+                customerForm.get('salesOffice')?.touched &&
+                customerForm.get('salesOffice')?.errors
+              "
+              class="text-red-500 text-xs mt-1"
+            >
+              <div
+                *ngIf="customerForm.get('salesOffice')?.errors?.['required']"
+              >
+                Sales Office is required
+              </div>
+            </div>
+          </div>
+
+          <!-- Sales Hierarchy -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Sales Hierarchy <span class="text-red-500">*</span>
+            </label>
+            <ng-select
+              [items]="salesHierarchyOptions"
+              bindLabel="label"
+              bindValue="value"
+              formControlName="salesHierarchy"
+              placeholder="Select sales hierarchy"
+              [clearable]="false"
+              class="custom-select"
+            >
+            </ng-select>
+            <div
+              *ngIf="
+                customerForm.get('salesHierarchy')?.touched &&
+                customerForm.get('salesHierarchy')?.errors
+              "
+              class="text-red-500 text-xs mt-1"
+            >
+              <div
+                *ngIf="customerForm.get('salesHierarchy')?.errors?.['required']"
+              >
+                Sales Hierarchy is required
+              </div>
+            </div>
+          </div>
+
+          <!-- Customer Subgroup -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Customer Subgroup <span class="text-red-500">*</span>
+            </label>
+            <ng-select
+              [items]="customerSubgroupOptions"
+              bindLabel="label"
+              bindValue="value"
+              formControlName="customerSubgroup"
+              placeholder="Select subgroup"
+              [clearable]="false"
+              class="custom-select"
+            >
+            </ng-select>
+            <div
+              *ngIf="
+                customerForm.get('customerSubgroup')?.touched &&
+                customerForm.get('customerSubgroup')?.errors
+              "
+              class="text-red-500 text-xs mt-1"
+            >
+              <div
+                *ngIf="customerForm.get('customerSubgroup')?.errors?.['required']"
+              >
+                Customer Subgroup is required
+              </div>
+            </div>
+          </div>
+
+          <!-- Sub Region -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Sub Region</label
+            >
+            <ng-select
+              [items]="subRegionOptions"
+              bindLabel="label"
+              bindValue="value"
+              formControlName="subRegion"
+              placeholder="Select sub region"
+              [clearable]="true"
+              class="custom-select"
+            >
+            </ng-select>
+          </div>
+
+          <!-- Account Assignment Group -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Account Assignment Group</label
+            >
+            <ng-select
+              [items]="accountAssignmentGroupOptions"
+              bindLabel="label"
+              bindValue="value"
+              formControlName="accountAssignmentGroup"
+              placeholder="Select account assignment group"
+              [clearable]="true"
+              class="custom-select"
+            >
+            </ng-select>
+          </div>
+
+          <!-- SO -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >SO</label
+            >
+            <ng-select
+              [items]="soOptions"
+              bindLabel="label"
+              bindValue="value"
+              formControlName="so"
+              placeholder="Select SO"
+              [clearable]="true"
+              class="custom-select"
+            >
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Configuration Section -->
+      <div class="mb-8">
+        <div class="flex items-center mb-4">
+          <svg
+            class="w-5 h-5 text-orange-500 mr-2"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"
+            />
+          </svg>
+          <h3 class="text-lg font-medium text-orange-600">
+            Financial Configuration
+          </h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Payment Terms -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Payment Terms <span class="text-red-500">*</span>
+            </label>
+            <ng-select
+              [items]="paymentTermsOptions"
+              bindLabel="label"
+              bindValue="value"
+              formControlName="paymentTerms"
+              placeholder="Select payment terms"
+              [clearable]="false"
+              class="custom-select"
+            >
+            </ng-select>
+            <div
+              *ngIf="
+                customerForm.get('paymentTerms')?.touched &&
+                customerForm.get('paymentTerms')?.errors
+              "
+              class="text-red-500 text-xs mt-1"
+            >
+              <div
+                *ngIf="customerForm.get('paymentTerms')?.errors?.['required']"
+              >
+                Payment Terms is required
+              </div>
+            </div>
+          </div>
+
+          <!-- Credit Limit -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Credit Limit <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              min="0"
+              formControlName="creditLimit"
+              placeholder="Enter credit limit"
+              step="1"
+              onkeydown="return event.key !== 'e' && event.key !== 'E' && event.key !== '-'"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            />
+            <div
+              *ngIf="
+                customerForm.get('creditLimit')?.touched &&
+                customerForm.get('creditLimit')?.errors
+              "
+              class="text-red-500 text-xs mt-1"
+            >
+              <div
+                *ngIf="customerForm.get('creditLimit')?.errors?.['required']"
+              >
+                Credit Limit is required
+              </div>
+
+              <div *ngIf="customerForm.get('creditLimit')?.errors?.['min']">
+                Credit Limit must be greater than or equal to
+                {{ customerForm.get('creditLimit')?.errors?.['min'].min }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Currency -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Currency <span class="text-red-500">*</span>
+            </label>
+            <ng-select
+              [items]="currencyOptions"
+              bindLabel="label"
+              bindValue="value"
+              formControlName="currency"
+              placeholder="Select currency"
+              [clearable]="false"
+              class="custom-select"
+            >
+            </ng-select>
+            <div
+              *ngIf="customerForm.get('currency')?.touched && customerForm.get('currency')?.errors?.['required']"
+              class="text-red-500 text-xs mt-1"
+            >
+              Currency is required
+            </div>
+          </div>
+
+          <!-- Price List -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Price List</label
+            >
+            <ng-select
+              [items]="priceListOptions"
+              bindLabel="label"
+              bindValue="value"
+              formControlName="priceList"
+              placeholder="Select price list"
+              [clearable]="true"
+              class="custom-select"
+            >
+            </ng-select>
+          </div>
+
+          <!-- Reconciliation Account Type -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Reconciliation Account Type</label
+            >
+            <ng-select
+              [items]="reconciliationAccountOptions"
+              bindLabel="label"
+              bindValue="value"
+              formControlName="reconciliationAccountType"
+              placeholder="Select reconciliation account type"
+              [clearable]="true"
+              class="custom-select"
+            >
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shipping Configuration Section -->
+      <div class="mb-8">
+        <div class="flex items-center mb-4">
+          <svg
+            class="w-5 h-5 text-orange-500 mr-2"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"
+            />
+          </svg>
+          <h3 class="text-lg font-medium text-orange-600">
+            Shipping Configuration
+          </h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Incoterms -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Incoterms</label
+            >
+            <ng-select
+              [items]="incotermsOptions"
+              bindLabel="label"
+              bindValue="value"
+              formControlName="incoterms"
+              placeholder="Select incoterms"
+              [clearable]="true"
+              class="custom-select"
+            >
+            </ng-select>
+          </div>
+
+          <!-- Shipping Conditions -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Shipping Conditions</label
+            >
+            <ng-select
+              [items]="shippingConditionsOptions"
+              bindLabel="label"
+              bindValue="value"
+              formControlName="shippingConditions"
+              placeholder="Select conditions"
+              class="custom-select"
+            >
+            </ng-select>
+          </div>
+
+          <!-- Delivery Priority -->
+          <div class="form-group">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Delivery Priority</label
+            >
+            <ng-select
+              [items]="deliveryPriorityOptions"
+              bindLabel="label"
+              bindValue="value"
+              formControlName="deliveryPriority"
+              placeholder="Select priority"
+              [searchable]="false"
+              class="custom-select"
+            >
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="px-6 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors"
+        >
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
