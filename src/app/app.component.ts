@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RouterOutlet } from '@angular/router';
 import { DialogComponent } from './dialog/dialog.component';
+import { CustomerRequestService } from './customer-request.service';
 
 interface CustomerRequest {
   requestNumber: string;
@@ -12,7 +13,6 @@ interface CustomerRequest {
   accountType: string;
   status: string;
 
-  // 🔽 add all the extra fields you need for form/dialog
   accountGroup: string;
   companyCode: string;
   salesOrganization: string;
@@ -41,60 +41,16 @@ interface CustomerRequest {
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   activeTab: string = 'pending';
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog,private customerRequestService: CustomerRequestService) {}
 
-  customerRequests: CustomerRequest[] = [
-    {
-      requestNumber: 'REQ001',
-      customerName: 'Acme Corp Ltd',
-      initiatorName: 'John Smith',
-      city: 'Mumbai',
-      accountType: 'GST Registered',
-      status: 'KYC Submitted',
-      accountGroup: 'AG01',
-      companyCode: '1000',
-      salesOrganization: 'SO1',
-      distributionChannel: '20',
-      division: 'FOOD',
-      customerGroup: 'CG01',
-      salesOffice: 'SO001',
-      salesHierarchy: 'SH001',
-      customerSubgroup: 'KEY',
-      subRegion: 'SR01',
-      accountAssignmentGroup: 'AAG01',
-      so: 'SO12345',
-      paymentTerms: 'PT30',
-      creditLimit: 40,
-      currency: 'INR',
-      priceList: 'PL01',
-      reconciliationAccountType: 'RAT01',
-      incoterms: 'FOB',
-      shippingConditions: 'SC01',
-      deliveryPriority: 'HIGH'
-    },
-    {
-      requestNumber: 'REQ002',
-      customerName: 'Global Industries',
-      initiatorName: 'Sarah Johnson',
-      city: 'Delhi',
-      accountType: 'Non-GST',
-      status: 'KYC Submitted',
-      accountGroup: '',
-      companyCode: '',
-      salesOrganization: '',
-      distributionChannel: '',
-      division: '',
-      customerGroup: '',
-      salesOffice: '',
-      salesHierarchy: '',
-      customerSubgroup: '',
-      paymentTerms: '',
-      creditLimit: 0,
-      currency: ''
-    }
-  ];
+  customerRequests: CustomerRequest[] = [];
+  ngOnInit(): void {
+    this.customerRequestService.getAll().subscribe(data => {
+      this.customerRequests = data;
+    });
+  }
 
   tabs = [
     { id: 'pending', label: 'Pending', count: 2 },
@@ -112,6 +68,7 @@ export class AppComponent {
   }
 
   editRequest(request: CustomerRequest) {
+    console.log(request);
     this.dialog.open(DialogComponent, {
       width: '100px',
       data: { mode: 'Edit', request }

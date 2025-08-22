@@ -5,22 +5,28 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
+import { firstValueFrom } from 'rxjs';
+
 import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, map, Observable, startWith, Subject, switchMap } from 'rxjs';
+import { AccountGroupService } from '../account-group.service';
+import { CustomerRequestService } from '../customer-request.service';
 export interface DropdownOption {
   value: string;
   label: string;
 }
 @Component({
   selector: 'app-dialog',
-  imports: [NgSelectModule,ReactiveFormsModule,CommonModule,MatDialogModule],
+  imports: [NgSelectModule, ReactiveFormsModule, CommonModule, MatDialogModule],
   templateUrl: './dialog.component.html',
   styleUrl: './dialog.component.scss'
 })
-export class DialogComponent implements OnInit{
+export class DialogComponent implements OnInit {
 
   customerForm!: FormGroup;
-  customerName:string='';
+  accountGroupOptions$!: Observable<DropdownOption[]>;
+  private searchInput$ = new Subject<string>();
 
   accountGroupOptions: DropdownOption[] = [
     { value: 'AG01', label: 'AG01-Customer' },
@@ -137,75 +143,94 @@ export class DialogComponent implements OnInit{
     { value: 'DP03', label: 'DP03-Low Priority' }
   ];
 
-  constructor(private fb: FormBuilder,public dialogRef: MatDialogRef<DialogComponent>,
+  constructor(private fb: FormBuilder,
+    private customerRequestService: CustomerRequestService,
+    public dialogRef: MatDialogRef<DialogComponent>,
+    private accountGroupService: AccountGroupService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-   this.customerName=this.data.customerName;
     this.initlizeForm()
-    this.patchAllFormValue();
+    
+   
+  }
+async patchAllFormValue(requestNumber: string): Promise<void> {
+  this.accountGroupOptions$ = this.searchInput$.pipe(
+    startWith(''),
+    debounceTime(400),
+    distinctUntilChanged(),
+    switchMap(query => {
+      if (!query) {
+        return this.accountGroupService.getDefaultAccountGroups();
+      } else {
+        return this.accountGroupService.searchAccountGroups(query);
+      }
+    }),
+    map(options => options ?? [])
+  );
 
-  }
-  patchAllFormValue()
-  {
-    console.log(this.data.request);
-    if (this.data.request) {
+  try {
+    const request = await firstValueFrom(
+      this.customerRequestService.getById(requestNumber)
+    );
+
     this.customerForm.patchValue({
-      accountGroup: this.data.request.accountGroup,
-      companyCode: this.data.request.companyCode,
-      salesOrganization: this.data.request.salesOrganization,
-      distributionChannel: this.data.request.distributionChannel,
-      division: this.data.request.division,
-      customerGroup: this.data.request.customerGroup,
-      salesOffice: this.data.request.salesOffice,
-      salesHierarchy: this.data.request.salesHierarchy,
-      customerSubgroup: this.data.request.customerSubgroup,
-      subRegion: this.data.request.subRegion,
-      accountAssignmentGroup: this.data.request.accountAssignmentGroup,
-      so: this.data.request.so,
-      paymentTerms: this.data.request.paymentTerms,
-      creditLimit: this.data.request.creditLimit,
-      currency: this.data.request.currency,
-      priceList: this.data.request.priceList,
-      reconciliationAccountType: this.data.request.reconciliationAccountType,
-      incoterms: this.data.request.incoterms,
-      shippingConditions: this.data.request.shippingConditions,
-      deliveryPriority: this.data.request.deliveryPriority
+      accountGroup: request?.accountGroup || null,
+      companyCode: request?.companyCode || null,
+      salesOrganization: request?.salesOrganization || null,
+      distributionChannel: request?.distributionChannel || null,
+      division: request?.division || null,
+      customerGroup: request?.customerGroup || null,
+      salesOffice: request?.salesOffice || null,
+      salesHierarchy: request?.salesHierarchy || null,
+      customerSubgroup: request?.customerSubgroup || null,
+      subRegion: request?.subRegion || null,
+      accountAssignmentGroup: request?.accountAssignmentGroup || null,
+      so: request?.so || null,
+      paymentTerms: request?.paymentTerms || null,
+      creditLimit: request?.creditLimit ?? 0,
+      currency: request?.currency || null,
+      priceList: request?.priceList || null,
+      reconciliationAccountType: request?.reconciliationAccountType || null,
+      incoterms: request?.incoterms || null,
+      shippingConditions: request?.shippingConditions || null,
+      deliveryPriority: request?.deliveryPriority || null
     });
+  } catch (err) {
+    console.error('❌ Error fetching request:', err);
   }
-  }
-  initlizeForm()
-  {
+}
+  initlizeForm() {
     this.customerForm = this.fb.group({
-      accountGroup: ['', Validators.required],
-      companyCode: ['', Validators.required],
-      salesOrganization: ['', Validators.required],
-      distributionChannel: ['20', Validators.required], 
-      division: ['', Validators.required],
-      customerGroup: ['', Validators.required],
-      
-      salesOffice: ['', Validators.required],
-      salesHierarchy: ['', Validators.required],
-      customerSubgroup: ['', Validators.required],
-      subRegion: [''],
-      accountAssignmentGroup: [''],
-      so: [''],
-      
-      paymentTerms: ['', Validators.required],
-      creditLimit: [40, [Validators.required, Validators.min(0)]], 
-      currency: ['', Validators.required],
-      priceList: [''],
-      reconciliationAccountType: [''],
-      
-      incoterms: [''],
-      shippingConditions: [''],
-      deliveryPriority: ['']
+      accountGroup: [null, Validators.required],
+      companyCode: [null, Validators.required],
+      salesOrganization: [null, Validators.required],
+      distributionChannel: [null, Validators.required],
+      division: [null, Validators.required],
+      customerGroup: [null, Validators.required],
+
+      salesOffice: [null, Validators.required],
+      salesHierarchy: [null, Validators.required],
+      customerSubgroup: [null, Validators.required],
+      subRegion: [null],
+      accountAssignmentGroup: [null],
+      so: [null],
+
+      paymentTerms: [null, Validators.required],
+      creditLimit: [null, [Validators.required, Validators.min(0)]],
+      currency: [null, Validators.required],
+      priceList: [null],
+      reconciliationAccountType: [null],
+
+      incoterms: [null],
+      shippingConditions: [null],
+      deliveryPriority: [null]
     });
   }
 
   ngOnInit(): void {
-    console.log(this.data.request.customerName);
-   this.customerName=this.data.customerName;
-
+  if (this.data?.request?.requestNumber) {
+    this.patchAllFormValue(this.data.request.requestNumber);
   }
+}
 
   onCancel(): void {
     this.dialogRef.close();
@@ -214,17 +239,13 @@ export class DialogComponent implements OnInit{
   onSubmit(): void {
     if (this.customerForm.valid) {
       console.log(this.customerForm.value);
+      this.dialogRef.close();
     } else {
-      Object.keys(this.customerForm.controls).forEach(key => {
-        this.customerForm.get(key)?.markAsTouched();
-      });
+      this.customerForm.markAllAsTouched();
     }
   }
 
-  isFieldRequired(fieldName: string): boolean {
-    const control = this.customerForm.get(fieldName);
-    return control?.hasError('required') && control?.touched || false;
+  onSearchAccountGroup(term: string) {
+    this.searchInput$.next(term);
   }
-
-  
 }
