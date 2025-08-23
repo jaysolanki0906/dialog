@@ -49,7 +49,7 @@
             [class]="
               'tab-button px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center space-x-2 ' +
               (activeTab === tab.id
-                ? 'active bg-indigo-600 text-white shadow-sm'
+                ? 'active bg-indigo-600 text-black shadow-sm'
                 : 'text-gray-600 hover:text-gray-900')
             "
           >
@@ -187,13 +187,13 @@
         </div>
       </div>
       <div *ngIf="showDialog" class="overlay" (click)="closeDialog()"></div>
-<div *ngIf="showDialog" class="dialog">
-  <app-customer-details
-    [requestId]="selectedRequestId"
-    (close)="closeDialog()">
-  </app-customer-details>
-</div>
-
+      <div *ngIf="showDialog" class="dialog">
+        <app-customer-details
+          [requestId]="selectedRequestId"
+          (close)="closeDialog()"
+        >
+        </app-customer-details>
+      </div>
     </div>
   </main>
 </div>
