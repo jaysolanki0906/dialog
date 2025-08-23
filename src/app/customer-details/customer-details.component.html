@@ -1,0 +1,132 @@
+<div class="relative bg-white rounded-lg shadow-lg max-w-6xl w-full max-h-[100vh] overflow-y-auto p-6 z-10">
+<!-- eKYC Information Section (First Screen) -->
+<div class="bg-gray-100 p-6 rounded-lg mb-6 max-w-4xl mx-auto" *ngIf="customerData">
+  <!-- Backdrop + Modal -->
+<div *ngIf="customerData" class="fixed inset-0 z-50 flex items-center justify-center">
+
+  <!-- Backdrop -->
+  <div 
+    class="absolute inset-0 bg-black bg-opacity-50" 
+    (click)="closeModal()">
+  </div>
+
+  <!-- Modal Content -->
+  <div class="relative bg-[#F1EDFF] rounded-lg shadow-lg w-[90vw] max-h-[90vh]  w-full overflow-y-auto p-6 z-10">
+    
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-semibold text-gray-800">Customer Details - {{customerData.companyName}}</h2>
+      <button (click)="closeModal()" class="text-gray-400 hover:text-gray-600 text-xl">×</button>
+    </div>
+
+    <p class="text-sm text-gray-500 mb-6">Complete customer information with eKYC and documents</p>
+
+    <div class="space-y-6">
+      
+      <!-- Personal Information -->
+      <div>
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Personal Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div><label class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+            <p class="text-gray-800">{{customerData.companyName}}</p></div>
+          <div><label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <p class="text-gray-500">{{customerData.email}}</p></div>
+          <div><label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+            <p class="text-gray-500">{{customerData.phone}}</p></div>
+          <div><label class="block text-sm font-medium text-gray-700 mb-1">City</label>
+            <p class="text-gray-500">{{customerData.city}}</p></div>
+          <div><label class="block text-sm font-medium text-gray-700 mb-1">State</label>
+            <p class="text-gray-800">{{customerData.state}}</p></div>
+          <div><label class="block text-sm font-medium text-gray-700 mb-1">Pincode</label>
+            <p class="text-gray-500">{{customerData.pincode}}</p></div>
+          <div><label class="block text-sm font-medium text-gray-700 mb-1">Country</label>
+            <p class="text-gray-800">{{customerData.country}}</p></div>
+          <div><label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+            <p class="text-gray-500">{{customerData.address}}</p></div>
+        </div>
+      </div>
+
+      <!-- GST Information -->
+      <div>
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">GST Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div><label class="block text-sm font-medium text-gray-700 mb-1">GST Registered</label>
+            <p class="text-gray-800">{{customerData.gstRegistered}}</p></div>
+          <div><label class="block text-sm font-medium text-gray-700 mb-1">GSTIN</label>
+            <p class="text-gray-500">{{customerData.gstin}}</p></div>
+        </div>
+      </div>
+
+      <!-- Tax & License Information -->
+      <div>
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Tax & License Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div><label class="block text-sm font-medium text-gray-700 mb-1">Account Type</label>
+            <p class="text-gray-800">{{customerData.accountType}}</p></div>
+          <div><label class="block text-sm font-medium text-gray-700 mb-1">PAN Number</label>
+            <p class="text-gray-500">{{customerData.panNumber}}</p></div>
+          <div><label class="block text-sm font-medium text-gray-700 mb-1">FSSAI License Number</label>
+            <p class="text-gray-500">{{customerData.fssaiLicenseNumber}}</p></div>
+          <div><label class="block text-sm font-medium text-gray-700 mb-1">Bank Account Number</label>
+            <p class="text-gray-500">{{customerData.bankAccountNumber}}</p></div>
+          <div><label class="block text-sm font-medium text-gray-700 mb-1">IFSC Code</label>
+            <p class="text-gray-800">{{customerData.ifscCode}}</p></div>
+          <div><label class="block text-sm font-medium text-gray-700 mb-1">Account Holder Name</label>
+            <p class="text-gray-500">{{customerData.accountHolderName}}</p></div>
+          <div><label class="block text-sm font-medium text-gray-700 mb-1">Bank Name</label>
+            <p class="text-gray-800">{{customerData.bankName}}</p></div>
+          <div><label class="block text-sm font-medium text-gray-700 mb-1">Branch Name</label>
+            <p class="text-gray-500">{{customerData.branchName}}</p></div>
+        </div>
+      </div>
+
+      <!-- eKYC Status & Verified Documents -->
+      <div>
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">eKYC Information</h3>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-sm font-medium text-gray-700">Status:</span>
+          <span class="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+            {{customerData.eKycStatus}}
+          </span>
+        </div>
+        <p class="text-sm font-medium text-gray-700 mb-2">Verified Documents:</p>
+        <div class="flex flex-wrap gap-2">
+          <span *ngFor="let doc of customerData?.verifiedDocuments" class="bg-gray-200 text-gray-700 text-xs px-3 py-1 rounded-full">
+            {{doc}}
+          </span>
+        </div>
+      </div>
+
+      <!-- Uploaded Documents -->
+      <div>
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Uploaded Documents</h3>
+        <div *ngFor="let doc of customerData?.uploadedDocuments" class="bg-[#F1EDFF] p-4 rounded-lg flex items-center justify-between shadow-sm border border-gray-200 mb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-gray-100 rounded flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#67717E"><path d="M320-440h320v-80H320v80Zm0 120h320v-80H320v80Zm0 120h200v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"/></svg>
+            </div>
+            <div>
+              <p class="font-medium text-gray-800">{{doc.name}}</p>
+              <p class="text-sm text-gray-500">{{doc.size}} • {{doc.type}}</p>
+            </div>
+          </div>
+          <button (click)="downloadDocument(doc)" class="flex items-center gap-2 text-gray-600 hover:text-gray-800 text-sm font-medium">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            Download
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- Loading state -->
+<div *ngIf="isLoading" class="flex justify-center items-center p-8">
+  <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+</div>
+</div>

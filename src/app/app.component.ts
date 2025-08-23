@@ -4,6 +4,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RouterOutlet } from '@angular/router';
 import { DialogComponent } from './dialog/dialog.component';
 import { CustomerRequestService } from './customer-request.service';
+import { CustomerDetailsComponent } from './customer-details/customer-details.component';
 
 interface CustomerRequest {
   requestNumber: string;
@@ -37,12 +38,14 @@ interface CustomerRequest {
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, MatDialogModule],
+  imports: [CommonModule, MatDialogModule,CustomerDetailsComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit{
   activeTab: string = 'pending';
+  selectedRequestId: any = null;
+  showDialog = false;
   constructor(private dialog: MatDialog,private customerRequestService: CustomerRequestService) {}
 
   customerRequests: CustomerRequest[] = [];
@@ -50,6 +53,10 @@ export class AppComponent implements OnInit{
     this.customerRequestService.getAll().subscribe(data => {
       this.customerRequests = data;
     });
+  }
+  closeDialog() {
+    this.showDialog = false;
+    this.selectedRequestId = null;
   }
 
   tabs = [
@@ -63,8 +70,10 @@ export class AppComponent implements OnInit{
     this.activeTab = tabId;
   }
 
-  viewRequest(requestNumber: string) {
+  viewRequest(requestNumber: any) {
     console.log('View request:', requestNumber);
+    this.selectedRequestId = requestNumber; 
+    this.showDialog = true;
   }
 
   editRequest(request: CustomerRequest) {

@@ -1,7 +1,7 @@
 .approval-dashboard {
   .tab-button {
     &.active {
-      background: #F1EDFF
+      background: #f1edff;
     }
   }
 
@@ -19,6 +19,31 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
   }
+  .overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+}
+  .dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 20px;
+  z-index: 1001;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+
+  width: 90vw;     
+  max-width: 1200px; 
+  max-height: 90vh; 
+}
+
 
   .table-row {
     &:hover {
@@ -41,7 +66,7 @@
     &::-webkit-scrollbar-thumb {
       background: #cbd5e1;
       border-radius: 4px;
-      
+
       &:hover {
         background: #94a3b8;
       }
